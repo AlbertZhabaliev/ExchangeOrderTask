@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExchangeOrderSelecor", "ExchangeOrderSelecor\ExchangeOrderSelecor.csproj", "{39D6B9E0-9A3E-4E90-8CBA-3C109C3F986D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExchangeOrderSelectorAPI", "..\ExchangeOrderSelectorAPI\ExchangeOrderSelectorAPI\ExchangeOrderSelectorAPI.csproj", "{B9993CA6-13BE-421C-BD9D-C09A2BC9DBA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{39D6B9E0-9A3E-4E90-8CBA-3C109C3F986D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39D6B9E0-9A3E-4E90-8CBA-3C109C3F986D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39D6B9E0-9A3E-4E90-8CBA-3C109C3F986D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39D6B9E0-9A3E-4E90-8CBA-3C109C3F986D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9993CA6-13BE-421C-BD9D-C09A2BC9DBA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9993CA6-13BE-421C-BD9D-C09A2BC9DBA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9993CA6-13BE-421C-BD9D-C09A2BC9DBA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9993CA6-13BE-421C-BD9D-C09A2BC9DBA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA6E2B82-69A5-4617-9A70-BCF8E0C30C62}
+	EndGlobalSection
+EndGlobal
