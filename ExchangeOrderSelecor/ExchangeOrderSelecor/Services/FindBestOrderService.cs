@@ -17,7 +17,7 @@ namespace ExchangeOrderSelecor.Services
 
         Dictionary<SelectedOrder, decimal> bestOrderIds = new Dictionary<SelectedOrder, decimal>();//Id is missing, replacing it with a index and filename
 
-        //TODO: Remove repitition, make Generic
+        //TODO: Remove repetition, make Generic
         private SelectedOrders SelectorForAsks(CustomerOrder orders, Customer customer, IList<Asks> asks)
         {
             decimal btcToBuy = orders.AmountOfBTC;
