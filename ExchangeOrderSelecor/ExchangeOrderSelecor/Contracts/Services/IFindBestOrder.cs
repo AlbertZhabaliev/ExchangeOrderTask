@@ -14,8 +14,7 @@ namespace ExchangeOrderSelecor.Contracts.Services
         Task<SelectedOrders> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer);
         Task<SelectedOrders> GetBestOrdersToSell2Async(CustomerOrder orders, Customer customer);
 
-
-        #region Depricated
+        #region deprecated, this Functions were just for the first testings
         Task<Dictionary<SelectedOrder, decimal>> GetOrdersToBuy(CustomerOrder orders, Customer customer);
         Task<SelectedOrders> GetOrdersToBuy2Async(CustomerOrder orders, Customer customer);
         #endregion

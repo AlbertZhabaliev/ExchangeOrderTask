@@ -15,8 +15,6 @@ namespace ExchangeOrderSelecor.Services
         public decimal PriceToPay { get; set; } = 0;
         public const int OneBitcoinInSatoshis = 100000000;
 
-        Dictionary<SelectedOrder, decimal> bestOrderIds = new Dictionary<SelectedOrder, decimal>();//Id is missing, replacing it with a index and filename
-
         //TODO: Remove repetition, make Generic
         private SelectedOrders SelectorForAsks(CustomerOrder orders, Customer customer, IList<Asks> asks)
         {
@@ -98,6 +96,9 @@ namespace ExchangeOrderSelecor.Services
             return bestOrder;
         }
 
+        #region deprecated, this Functions were just for the first testings
+        //Id is missing, replacing it with the index and filename
+        Dictionary<SelectedOrder, decimal> bestOrderIds = new Dictionary<SelectedOrder, decimal>();
         public async Task<SelectedOrders> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer)
         {
         var res = await GetAllOrdersFromExchanges();
@@ -120,11 +121,17 @@ namespace ExchangeOrderSelecor.Services
         return bestOrder;
 
         }
+        private async Task<Dictionary<string, Orders>> GetAllOrdersFromExchanges()
+        {
+            GetSingleOrderBookService getSingleOrderBookService = new();
+            //Assuming the Order Book is already sorted
+            var res = await getSingleOrderBookService.ReadAllFilesFromLocalJsonOrderBook();
+            return res;
+        }
         
+
         public async Task<Dictionary<SelectedOrder, decimal>> GetOrdersToBuy(CustomerOrder orders, Customer customer)
         {
-            //after finishing this function I saw that I got the buy sell process wrong.
-
             //Analyzing the JsonFile showed that it is sorted, so possible sorting will be skipped
             List<Asks> askas = await GetAsksSingleExchange();
             decimal btcToBuy = orders.AmountOfBTC;
@@ -134,7 +141,6 @@ namespace ExchangeOrderSelecor.Services
 
             while ((btcToBuy != fillOrder)) //fill the order
             {
-
                 if (btcToBuy < askas[i].Order.Amount)
                 {//this single position is bigger then the Order needs to be filled, so skip
                     i++;
@@ -174,7 +180,6 @@ namespace ExchangeOrderSelecor.Services
             return selectedOrders;
         }
         
-        
         private async Task<List<Asks>> GetAsksSingleExchange()
         {
             GetSingleOrderBookService getSingleOrderBookService = new();
@@ -182,13 +187,6 @@ namespace ExchangeOrderSelecor.Services
             var res = await getSingleOrderBookService.ReadFromLocalStorageJsonOrderBook();
             return res.Asks.ToList();
         }
-
-        private async Task<Dictionary<string, Orders>> GetAllOrdersFromExchanges()
-        {
-            GetSingleOrderBookService getSingleOrderBookService = new();
-            //Assuming the Order Book is already sorted
-            var res = await getSingleOrderBookService.ReadAllFilesFromLocalJsonOrderBook();
-            return res;
-        }
+        #endregion
     }
 }

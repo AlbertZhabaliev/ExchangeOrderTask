@@ -8,6 +8,7 @@ namespace ExchangeOrderSelecor.Models.Enums
 {
     public enum OrderStatus
     {
+        //Not in use in the current version
         Executed = 0,
         NotEnoughMoney =1,
         NotEnoughBuyers=2,

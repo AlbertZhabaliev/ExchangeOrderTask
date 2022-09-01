@@ -10,8 +10,6 @@ namespace ExchangeOrderSelecor.Contracts.Services
     public interface IGetSingleOrderBookService
     {
         //public IFileService FileService { get; }
-
-
         Task<List<Order>> GetSingleOrderBook();
         Task<Orders> ReadFromLocalStorageJsonOrderBook();
     }

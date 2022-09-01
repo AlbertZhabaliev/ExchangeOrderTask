@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExchangeOrderSelecor.Models.OrderBookModel
 {
-    //Created with Helf of https://app.quicktype.io/
+    //Created with Help of https://app.quicktype.io/
     public class Orders
     {
         [JsonProperty("AcqTime")]
@@ -18,6 +18,5 @@ namespace ExchangeOrderSelecor.Models.OrderBookModel
 
         [JsonProperty("Asks")]
         public IList<Asks> Asks { get; set; }
-
     }
 }

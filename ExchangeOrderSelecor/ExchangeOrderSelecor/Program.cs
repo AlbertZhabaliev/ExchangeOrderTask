@@ -11,7 +11,7 @@ using ExchangeOrderSelecor.Models.Enums;
 using ExchangeOrderSelecor.Models.OrderBookModel;
 
 
-//Create a sample Customer with a sample wallet and Random Balance
+//Create a sample Customer with a sample wallet and Random Balance for btc and euro
 GenerateSampleCustomerService _sampleCustomer = new GenerateSampleCustomerService();
 Customer SampleCustomer = await _sampleCustomer.GetSampleCustomer();
 
@@ -37,7 +37,6 @@ while (!isSelectionOk)
     if (!string.IsNullOrEmpty(selectedOrderType) &&
         (selectedOrderType.Equals("b", comparisonType: StringComparison.CurrentCultureIgnoreCase) ||
         selectedOrderType.Equals("s", comparisonType: StringComparison.CurrentCultureIgnoreCase)))
-
     {
         isSelectionOk = true;
         Console.WriteLine($"selected -> {selectedOrderType}");
@@ -56,6 +55,7 @@ isSelectionOk = false;
 while (!(isSelectionOk = false && isSellingPossible == false))
 {
     btcToProcessInput = Console.ReadLine();
+
     if (!string.IsNullOrEmpty(btcToProcessInput) &&
         Double.TryParse(Convert.ToString(btcToProcessInput),
         System.Globalization.NumberStyles.Any,
@@ -66,7 +66,6 @@ while (!(isSelectionOk = false && isSellingPossible == false))
         if (!(btcAmountToProcess > 0))
         {
             Console.WriteLine("Must be greater 0");
-
             continue;
         }
 
@@ -77,6 +76,7 @@ while (!(isSelectionOk = false && isSellingPossible == false))
             isSellingPossible = false;
             continue;
         }
+
         isSellingPossible = true;
         isSelectionOk = true;
         Console.WriteLine($"Amount of BTC selcted -> {btcToProcessInput}");
@@ -88,7 +88,6 @@ while (!(isSelectionOk = false && isSellingPossible == false))
 
 Dictionary<SelectedOrder, decimal> selectedOrders = new();
 SelectedOrders bestOrderesRes = new();
-
 
 switch (selectedOrderType)
 {
@@ -148,6 +147,6 @@ else if(SampleCustomer.CustomerOrders.First().OrderType == OrderType.Sell)
     Console.WriteLine($"PriceToGet: {bestOrderesRes.PriceToGet} € \n");
 }
 
-
 Console.WriteLine("finished");
+
 

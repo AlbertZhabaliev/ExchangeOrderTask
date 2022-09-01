@@ -12,7 +12,6 @@ namespace ExchangeOrderSelecor.Models.CustomerModel
         public int CustomerId { get; set; }
         public decimal EuroAvailable { get; set; }
         public decimal BTCAvailable { get; set; }
-
     }
 
 }

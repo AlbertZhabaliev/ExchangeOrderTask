@@ -21,7 +21,6 @@ namespace ExchangeOrderSelecor.Services
 
                 return JsonConvert.DeserializeObject<T>(json, converters: new OrderConverter());
             }
-
             return default;
         }
         public async Task<T> ReadAsync<T>(string folderPath, string fileName)
@@ -33,7 +32,6 @@ namespace ExchangeOrderSelecor.Services
 
                 return JsonConvert.DeserializeObject<T>(json, converters: new OrderConverter());
             }
-
             return default;
         }
 

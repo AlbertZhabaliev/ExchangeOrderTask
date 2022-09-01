@@ -14,10 +14,9 @@ namespace ExchangeOrderSelecor.Models.CustomerModel
         public DateTime OrderPlacementTime { get; set; }
         public OrderType OrderType{ get; set; }
         public Kind  OrderExecutaionType{ get; set; }
-
-        //Simplified
-        //public double PriceProBTC { get; set; }
         public decimal AmountOfBTC { get; set; }
+
+        //public double PriceProBTC { get; set; }
         //public CurrencyType CurrencyType { get; set; }
 
     }

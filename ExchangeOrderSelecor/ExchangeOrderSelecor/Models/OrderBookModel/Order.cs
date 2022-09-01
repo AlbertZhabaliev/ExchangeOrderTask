@@ -30,24 +30,4 @@ namespace ExchangeOrderSelecor.Models.OrderBookModel
 
         //public Status OrderStatus{ get; set; }
     }
-
-    //[JsonProperty("Id")]
-    //public int OrderBookOrderId { get; set; }
-
-    //[JsonProperty("Time")]
-    //public DateTime? OrderPlacementTime { get; set; }
-
-    //[JsonProperty("Type")]
-    //public OrderType OrderType { get; set; }
-
-    //[JsonProperty("Kind")]
-    //public OrderExecutaionType OrderExecutaionType { get; set; }
-
-    //[JsonProperty("Amount")]
-    //public double AmountBTC { get; set; }
-
-    //[JsonProperty("Price")]
-    //public decimal PriceProBTC { get; set; }
-
-    //public Status OrderStatus{ get; set; }
 }

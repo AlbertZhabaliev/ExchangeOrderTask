@@ -7,13 +7,8 @@ namespace ExchangeOrderSelecor.Services
     public class GenerateCustomerOrderService : IGenerateCustomerOrderService
     {
 
-        public GenerateCustomerOrderService()
-        {
-
-        }
         public Task<CustomerOrder> PlaceBuyOrder(Customer customer, decimal btcToBuy)
         {
-           
             CustomerOrder tmp = new()
             {
                 CustomerId = customer.CustomerId,
@@ -26,6 +21,7 @@ namespace ExchangeOrderSelecor.Services
 
             return Task.FromResult(tmp);
         }
+
         public Task<CustomerOrder> PlaceSellOrder(Customer customer, decimal btcToSell)
         {
             CustomerOrder tmp = new()

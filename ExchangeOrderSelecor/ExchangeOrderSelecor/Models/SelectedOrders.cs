@@ -10,7 +10,6 @@ namespace ExchangeOrderSelecor.Models
     {
         public string FileJsonName { get; set; } = string.Empty;
         public decimal PriceToPay { get; set; } = 0;
-
         public decimal PriceToGet { get; set; } = 0;
 
         public bool IsExcecutable = false;
@@ -21,9 +20,7 @@ namespace ExchangeOrderSelecor.Models
     public class SelectedOrder
     {
         public int Id { get; set; } = 0;
-
         public decimal PriceProBtc { get; set; } = 0;
-
         
     }
 }
