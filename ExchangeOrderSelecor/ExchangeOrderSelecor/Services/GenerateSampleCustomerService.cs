@@ -32,7 +32,7 @@ namespace ExchangeOrderSelecor.Services
                 Customer = sampleCustomer;
                 return Task.FromResult(Customer);
             }
-            if (Customer != null && Customer.CustomerId == i)
+            if (Customer.CustomerId == i)
             {
                 return Task.FromResult(Customer);
             }

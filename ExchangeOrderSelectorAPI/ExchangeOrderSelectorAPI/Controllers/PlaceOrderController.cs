@@ -51,7 +51,7 @@ namespace ExchangeOrderSelectorAPI.Controllers
         public async Task<ActionResult<OrderSelection>> Post([FromBody] CustomerOrder customerOrder)
         {
             var actionResult = ValidateModel(customerOrder);
-            if (actionResult == NoContent())
+            if (actionResult.GetType() != NoContent().GetType() )
                 return actionResult;
 
             var customer = await _customerRepository.GetCustomerAsync(customerOrder.CustomerId);
