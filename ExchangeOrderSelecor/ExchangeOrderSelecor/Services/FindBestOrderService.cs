@@ -1,5 +1,4 @@
 ﻿using ExchangeOrderSelecor.Contracts.Services;
-using ExchangeOrderSelecor.Models;
 using ExchangeOrderSelecor.Models.CustomerModel;
 using ExchangeOrderSelecor.Models.OrderBookModel;
 using System;
@@ -16,24 +15,27 @@ namespace ExchangeOrderSelecor.Services
         public const int OneBitcoinInSatoshis = 100000000;
 
         //TODO: Remove repetition, make Generic
-        private SelectedOrders SelectorForAsks(CustomerOrder orders, Customer customer, IList<Asks> asks)
+       
+
+
+        private OrderSelection SelectorForAsks(CustomerOrder orders, Customer customer, IList<Asks> asks)
         {
             decimal btcToBuy = orders.AmountOfBTC;
             decimal fillOrder = 0;
-            SelectedOrders selectedOrders = new();
+            OrderSelection selectedOrders = new();
             int i = 0;
 
             while (btcToBuy >= fillOrder & i < asks.Count /*&& customer.Wallet.EuroAvailable >= selectedOrders.PriceToPay*/)
             {
                 SelectedOrder selected = new();
                 fillOrder = fillOrder + asks[i].Order.Amount;
-                selectedOrders.PriceToPay = selectedOrders.PriceToPay + asks[i].Order.Price * asks[i].Order.Amount;
+                selectedOrders.PurchasePrice = selectedOrders.PurchasePrice + asks[i].Order.Price * asks[i].Order.Amount;
                 selected.PriceProBtc = asks[i].Order.Price;
                 selected.Id = i;
-                selectedOrders.ordersSelected.Add(selected);
+                selectedOrders.SelectedOrders.Add(selected);
                 i++;
             }
-            if (customer.Wallet.EuroAvailable <= selectedOrders.PriceToPay || i == asks.Count)
+            if (customer.Wallet.EuroAvailable <= selectedOrders.PurchasePrice || i == asks.Count)
             {
                 selectedOrders.IsExcecutable = false;
                 return selectedOrders;
@@ -41,43 +43,43 @@ namespace ExchangeOrderSelecor.Services
             decimal tmpDiff = fillOrder - btcToBuy;
             fillOrder = fillOrder - tmpDiff;
 
-            selectedOrders.PriceToPay = selectedOrders.PriceToPay - (asks[i].Order.Price * tmpDiff);
+            selectedOrders.PurchasePrice = selectedOrders.PurchasePrice - (asks[i].Order.Price * tmpDiff);
  
             selectedOrders.IsExcecutable = true;
 
             return selectedOrders;
         }
-        private SelectedOrders SelectorForBids(CustomerOrder orders, Customer customer, IList<Bids> bids)
+        private OrderSelection SelectorForBids(CustomerOrder orders, Customer customer, IList<Bids> bids)
         {
             decimal btcToSell = orders.AmountOfBTC;
             decimal fillOrder = 0;
-            SelectedOrders selectedOrders = new();
+            OrderSelection selectedOrders = new();
             int i = 0;
 
             while (btcToSell >= fillOrder && bids.Count > i/*&& customer.Wallet.EuroAvailable >= selectedOrders.PriceToPay*/)
             {
                 SelectedOrder selected = new();
                 fillOrder = fillOrder + bids[i].Order.Amount;
-                selectedOrders.PriceToGet = selectedOrders.PriceToGet + bids[i].Order.Price * bids[i].Order.Amount;
+                selectedOrders.SalesPrice = selectedOrders.SalesPrice + bids[i].Order.Price * bids[i].Order.Amount;
                 selected.PriceProBtc = bids[i].Order.Price;
                 selected.Id = i;
-                selectedOrders.ordersSelected.Add(selected);
+                selectedOrders.SelectedOrders.Add(selected);
                 i++;
             }
 
             decimal tmpDiff = fillOrder - btcToSell;
             fillOrder = fillOrder - tmpDiff;
 
-            selectedOrders.PriceToGet = selectedOrders.PriceToGet - (bids[i].Order.Price * tmpDiff);
+            selectedOrders.SalesPrice = selectedOrders.SalesPrice - (bids[i].Order.Price * tmpDiff);
             
             selectedOrders.IsExcecutable = true;
             return selectedOrders;
         }
 
-        public async Task<SelectedOrders> GetBestOrdersToSell2Async(CustomerOrder order, Customer customer)
+        public async Task<OrderSelection> GetBestOrdersToSell2Async(CustomerOrder order, Customer customer)
         {
             var res = await GetAllOrdersFromExchanges();
-            List<SelectedOrders> selectedOrders = new();
+            List<OrderSelection> selectedOrders = new();
             ParallelOptions parallelOptions = new()
             {
                 MaxDegreeOfParallelism = 1
@@ -85,13 +87,13 @@ namespace ExchangeOrderSelecor.Services
 
             Parallel.ForEach(res, parallelOptions, orderBook =>
             {
-                SelectedOrders selectedOrderInCurrentBids = new();
+                OrderSelection selectedOrderInCurrentBids = new();
                 selectedOrderInCurrentBids = SelectorForBids(order, customer, orderBook.Value.Bids);
-                selectedOrderInCurrentBids.FileJsonName = orderBook.Key;
+                selectedOrderInCurrentBids.ExchangeFileName = orderBook.Key;
                 selectedOrders.Add(selectedOrderInCurrentBids);
             });
             
-            var bestOrder = selectedOrders./*Where(o=> o.IsExcecutable)*/OrderBy(p => p.PriceToGet).LastOrDefault();
+            var bestOrder = selectedOrders./*Where(o=> o.IsExcecutable)*/OrderBy(p => p.SalesPrice).LastOrDefault();
 
             return bestOrder;
         }
@@ -99,10 +101,10 @@ namespace ExchangeOrderSelecor.Services
         #region deprecated, this Functions were just for the first testings
         //Id is missing, replacing it with the index and filename
         Dictionary<SelectedOrder, decimal> bestOrderIds = new Dictionary<SelectedOrder, decimal>();
-        public async Task<SelectedOrders> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer)
+        public async Task<OrderSelection> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer)
         {
         var res = await GetAllOrdersFromExchanges();
-        List<SelectedOrders> selectedOrders = new();
+        List<OrderSelection> selectedOrders = new();
         ParallelOptions parallelOptions = new()
         {
             MaxDegreeOfParallelism = 1
@@ -110,13 +112,13 @@ namespace ExchangeOrderSelecor.Services
 
         Parallel.ForEach(res, parallelOptions, orderBook =>
         {
-            SelectedOrders selectedOrderInCurrentAsk = new();
+            OrderSelection selectedOrderInCurrentAsk = new();
             selectedOrderInCurrentAsk = SelectorForAsks(orders, customer, orderBook.Value.Asks);
-            selectedOrderInCurrentAsk.FileJsonName = orderBook.Key;
+            selectedOrderInCurrentAsk.ExchangeFileName = orderBook.Key;
             selectedOrders.Add(selectedOrderInCurrentAsk);
         });
 
-        var bestOrder = selectedOrders./*Where(o=> o.IsExcecutable)*/OrderBy(p => p.PriceToPay).FirstOrDefault();
+        var bestOrder = selectedOrders./*Where(o=> o.IsExcecutable)*/OrderBy(p => p.PurchasePrice).FirstOrDefault();
 
         return bestOrder;
 
@@ -173,10 +175,10 @@ namespace ExchangeOrderSelecor.Services
             return bestOrderIds;
         }
 
-        public async Task<SelectedOrders> GetOrdersToBuy2Async(CustomerOrder orders, Customer customer)
+        public async Task<OrderSelection> GetOrdersToBuy2Async(CustomerOrder orders, Customer customer)
         {
             List<Asks> asks = await GetAsksSingleExchange();
-            SelectedOrders selectedOrders = SelectorForAsks(orders, customer, asks);
+            OrderSelection selectedOrders = SelectorForAsks(orders, customer, asks);
             return selectedOrders;
         }
         

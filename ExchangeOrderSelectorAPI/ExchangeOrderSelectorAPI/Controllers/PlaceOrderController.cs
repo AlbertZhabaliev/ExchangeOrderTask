@@ -1,9 +1,11 @@
 ﻿using ExchangeOrderSelecor.Contracts.Services;
 using ExchangeOrderSelecor.Helpers;
-using ExchangeOrderSelecor.Models;
 using ExchangeOrderSelecor.Models.CustomerModel;
+using ExchangeOrderSelecor.Models.Enums;
+using ExchangeOrderSelecor.Models.OrderBookModel;
 using ExchangeOrderSelectorAPI.Contracts;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,37 +19,59 @@ namespace ExchangeOrderSelectorAPI.Controllers
         private readonly ICustomerRepository _customerRepository;
         private readonly IFindBestOrderService _findBestOrderService;
 
-        public PlaceOrderController(ICustomerRepository getSampleCustomer,
+
+        #region Classes
+        public class CustomerOrderDto
+        {
+            public int OrderId { get; set; }
+
+            [Range(0, int.MaxValue)]
+            public int CustomerId { get; set; }
+            public DateTime OrderPlacementTime { get; set; }
+            public OrderType OrderType { get; set; }
+            public Kind OrderExecutaionType { get; set; }
+
+            [Range(0.0, (double)decimal.MaxValue)]
+            public decimal AmountOfBTC { get; set; }
+
+        }
+        #endregion
+
+
+        public PlaceOrderController(ICustomerRepository customerRepository,
             IFindBestOrderService findBestOrderService
             )
         {
-            _customerRepository = getSampleCustomer;
+            _customerRepository = customerRepository;
             _findBestOrderService = findBestOrderService;
         }
 
-
-        // POST api/<PlaceOrderController>Hope 
+        
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] CustomerOrder customerOrder)
+        public async Task<ActionResult<OrderSelection>> Post([FromBody] CustomerOrder customerOrder)
         {
-            if (_customerRepository.CurrentCustomer == null)
+            var actionResult = ValidateModel(customerOrder);
+            if (actionResult == NoContent())
+                return actionResult;
+
+            var customer = await _customerRepository.GetCustomerAsync(customerOrder.CustomerId);
+            if (customer.CustomerId == 0)
             {
-                return NotFound("Customer not created yet, please call first the Get Customer Endpoint");
+                return NotFound("Customer not found.");
             }
 
             try
             {
-                decimal btcToProcess = Decimal.Parse(customerOrder.AmountOfBTC.ToString());
 
                 switch (customerOrder.OrderType)
                 {
-                    case ExchangeOrderSelecor.Models.Enums.OrderType.Buy:
+                    case OrderType.Buy:
 
-                        return await SelectBuyOrder(customerOrder);
+                        return await SelectBuyOrder(customerOrder, customer);
 
-                    case ExchangeOrderSelecor.Models.Enums.OrderType.Sell:
+                    case OrderType.Sell:
 
-                        return await SellectSellOrder(customerOrder);
+                        return await SellectSellOrder(customerOrder, customer);
 
                     default:
                         return BadRequest("Somthing went wrong");
@@ -59,27 +83,39 @@ namespace ExchangeOrderSelectorAPI.Controllers
             }
         }
 
-        private async Task<ActionResult<string>> SellectSellOrder(CustomerOrder customerOrder)
-        {
-            if (_customerRepository.CurrentCustomer.Wallet.BTCAvailable < customerOrder.AmountOfBTC)
-            {
-                return BadRequest("The Sell amount exceeds you BTC balance");
 
-            }
-            var sellRes = await _findBestOrderService.GetBestOrdersToSell2Async(customerOrder, _customerRepository.CurrentCustomer);
-            string sellResp = await Json.StringifyAsync(sellRes);
-            return sellResp;
+        private ActionResult ValidateModel(CustomerOrder customerOrder)
+        {
+            if (customerOrder.CustomerId <= 0 )
+                return BadRequest($"{nameof(customerOrder.CustomerId)} must be greater 0");
+
+            if (customerOrder.AmountOfBTC <= 0)
+                return BadRequest($"{nameof(customerOrder.AmountOfBTC)} must be greater 0");
+
+            return NoContent();
+
+            //ModelState.AddModelError("AmountOfBTC", "Must be greater than 0");
+            //if (this.ModelState.IsValid == false)
+            //    return BadRequest(ModelState);
         }
 
-        private async Task<ActionResult<string>> SelectBuyOrder(CustomerOrder customerOrder)
+        private async Task<ActionResult<OrderSelection>> SellectSellOrder(CustomerOrder customerOrder, Customer customer)
         {
-            var buyRes = await _findBestOrderService.GetBestOrdersToBuy2Async(customerOrder, _customerRepository.CurrentCustomer);
+            if (customer.Wallet.BTCAvailable < customerOrder.AmountOfBTC)
+                return BadRequest("The Sell amount exceeds you BTC balance");
+
+            var sellRes = await _findBestOrderService.GetBestOrdersToSell2Async(customerOrder, customer);
+
+            return Ok(sellRes);
+        }
+
+        private async Task<ActionResult<OrderSelection>> SelectBuyOrder(CustomerOrder customerOrder, Customer customer)
+        {
+            var buyRes = await _findBestOrderService.GetBestOrdersToBuy2Async(customerOrder, customer);
             if (buyRes != null && buyRes.IsExcecutable == false)
-            {
                 return BadRequest("Order cann't be executed, please check your balance");
-            }
-            string buyResp = await Json.StringifyAsync(buyRes);
-            return buyResp;
+
+            return Ok(buyRes);
         }
     }
 }

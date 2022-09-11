@@ -1,5 +1,4 @@
-﻿using ExchangeOrderSelecor.Models;
-using ExchangeOrderSelecor.Models.CustomerModel;
+﻿using ExchangeOrderSelecor.Models.CustomerModel;
 using ExchangeOrderSelecor.Models.OrderBookModel;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,12 @@ namespace ExchangeOrderSelecor.Contracts.Services
 {
     public interface IFindBestOrderService
     {
-        Task<SelectedOrders> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer);
-        Task<SelectedOrders> GetBestOrdersToSell2Async(CustomerOrder orders, Customer customer);
+        Task<OrderSelection> GetBestOrdersToBuy2Async(CustomerOrder orders, Customer customer);
+        Task<OrderSelection> GetBestOrdersToSell2Async(CustomerOrder orders, Customer customer);
 
         #region deprecated, this Functions were just for the first testings
         Task<Dictionary<SelectedOrder, decimal>> GetOrdersToBuy(CustomerOrder orders, Customer customer);
-        Task<SelectedOrders> GetOrdersToBuy2Async(CustomerOrder orders, Customer customer);
+        Task<OrderSelection> GetOrdersToBuy2Async(CustomerOrder orders, Customer customer);
         #endregion
     }
 }

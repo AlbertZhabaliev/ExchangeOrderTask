@@ -1,6 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using ExchangeOrderSelecor.Contracts.Services;
-using ExchangeOrderSelecor.Models;
 using ExchangeOrderSelecor.Models.CustomerModel;
 using ExchangeOrderSelecor.Services;
 using Newtonsoft.Json.Linq;
@@ -13,7 +12,7 @@ using ExchangeOrderSelecor.Models.OrderBookModel;
 
 //Create a sample Customer with a sample wallet and Random Balance for btc and euro
 GenerateSampleCustomerService _sampleCustomer = new GenerateSampleCustomerService();
-Customer SampleCustomer = await _sampleCustomer.GetSampleCustomer();
+Customer SampleCustomer = await _sampleCustomer.GetSampleCustomer(34);
 
 GenerateCustomerOrderService _generateCustomerOrder = new GenerateCustomerOrderService();
 FindBestOrderService findBestOrderService = new FindBestOrderService();
@@ -87,7 +86,7 @@ while (!(isSelectionOk = false && isSellingPossible == false))
 
 
 Dictionary<SelectedOrder, decimal> selectedOrders = new();
-SelectedOrders bestOrderesRes = new();
+OrderSelection bestOrderesRes = new();
 
 switch (selectedOrderType)
 {
@@ -124,27 +123,27 @@ if (bestOrderesRes.IsExcecutable == false)
 {
     Console.WriteLine($"Not enought Money to execute the Order please Deposit\n");
     Console.WriteLine($"Currently available: {SampleCustomer.Wallet.EuroAvailable} Euro\n");
-    Console.WriteLine($"Requierd amount: {bestOrderesRes.PriceToPay} Euro\n");
+    Console.WriteLine($"Requierd amount: {bestOrderesRes.PurchasePrice} Euro\n");
 }
 else if(SampleCustomer.CustomerOrders.First().OrderType == OrderType.Buy)
 {
-    Console.WriteLine($"File name: {bestOrderesRes.FileJsonName}\n");
+    Console.WriteLine($"File name: {bestOrderesRes.ExchangeFileName}\n");
 
-    foreach (var item in bestOrderesRes.ordersSelected)
+    foreach (var item in bestOrderesRes.SelectedOrders)
     {
         Console.WriteLine($"Order Id's selected: {item.Id}\t Price/BTC {item.PriceProBtc}€");
     }
-    Console.WriteLine($"PriceToPay: {bestOrderesRes.PriceToPay} € \n");
+    Console.WriteLine($"PriceToPay: {bestOrderesRes.PurchasePrice} € \n");
 }
 else if(SampleCustomer.CustomerOrders.First().OrderType == OrderType.Sell)
 {
-    Console.WriteLine($"File name: {bestOrderesRes.FileJsonName}\n");
+    Console.WriteLine($"File name: {bestOrderesRes.ExchangeFileName}\n");
 
-    foreach (var item in bestOrderesRes.ordersSelected)
+    foreach (var item in bestOrderesRes.SelectedOrders)
     {
         Console.WriteLine($"Order Id's selected: {item.Id}\t Price/BTC {item.PriceProBtc}€");
     }
-    Console.WriteLine($"PriceToGet: {bestOrderesRes.PriceToGet} € \n");
+    Console.WriteLine($"PriceToGet: {bestOrderesRes.SalesPrice} € \n");
 }
 
 Console.WriteLine("finished");

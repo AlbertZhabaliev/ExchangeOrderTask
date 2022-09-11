@@ -4,7 +4,7 @@ namespace ExchangeOrderSelectorAPI.Contracts
 {
     public interface ICustomerRepository
     {
-        public Customer CurrentCustomer { get;}
-        Task<Customer> GetCustomer();
+        //public Customer CurrentCustomer { get;}
+        Task<Customer> GetCustomerAsync(int id);
     }
 }

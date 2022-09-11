@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ExchangeOrderSelecor.Helpers
 {
-    //This Class from Microsoft WinUI Template Wizard
+    //This Class comes from Microsoft WinUI TemplateCraator
     public static class Json
     {
         public static async Task<T> ToObjectAsync<T>(string value)

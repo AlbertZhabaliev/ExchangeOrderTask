@@ -6,7 +6,6 @@ namespace ExchangeOrderSelectorAPI.Repository
 {
     public class CustomerRepository : ICustomerRepository
     {
-        public Customer CurrentCustomer { get; private set; }
         private readonly IGenerateSampleCustomerService GenereateSampleCustomer;
 
         public CustomerRepository(IGenerateSampleCustomerService genereateSampleCustomer)
@@ -14,11 +13,9 @@ namespace ExchangeOrderSelectorAPI.Repository
             GenereateSampleCustomer = genereateSampleCustomer;
         }
 
-
-        public async Task<Customer> GetCustomer()
+        public async Task<Customer> GetCustomerAsync(int id)
         {
-            CurrentCustomer = await GenereateSampleCustomer.GetSampleCustomer();
-            return CurrentCustomer;
+            return await GenereateSampleCustomer.GetSampleCustomer(id);
         }
     }
 }

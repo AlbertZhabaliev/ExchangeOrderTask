@@ -9,6 +9,6 @@ namespace ExchangeOrderSelecor.Contracts.Services
 {
     public interface IGenerateSampleCustomerService
     {
-        Task<Customer> GetSampleCustomer();
+        Task<Customer> GetSampleCustomer(int id);
     }
 }

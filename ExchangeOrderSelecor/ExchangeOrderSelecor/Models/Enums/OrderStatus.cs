@@ -13,6 +13,7 @@ namespace ExchangeOrderSelecor.Models.Enums
         NotEnoughMoney =1,
         NotEnoughBuyers=2,
         NotFilled =3,
+        ConnectionError =4
 
     }
 }

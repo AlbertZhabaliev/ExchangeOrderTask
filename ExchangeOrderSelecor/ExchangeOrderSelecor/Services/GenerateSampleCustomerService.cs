@@ -11,22 +11,33 @@ namespace ExchangeOrderSelecor.Services
 {
     public class GenerateSampleCustomerService : IGenerateSampleCustomerService
     {
-        public Task<Customer> GetSampleCustomer()
+        //this property is just for the simulation normally cutomer is grabed through the reposotory after LogIn
+        public Customer Customer { get; private set; }
+        public Task<Customer> GetSampleCustomer(int i)
         {
             Customer sampleCustomer = new Customer()
             {
-                CustomerId = 1,
+                CustomerId = i,
                 CustomerName = "Sample Customer",
                 CustomerOrders = new(),
                 Wallet = new()
                 {
-                    CustomerId = 1,
+                    CustomerId = i,
                     BTCAvailable = GetRandomBTCAmount(),
                     EuroAvailable = GetRandomEuroAmount(),
                 }
             };
-
-            return Task.FromResult(sampleCustomer);
+            if (Customer == null)
+            {
+                Customer = sampleCustomer;
+                return Task.FromResult(Customer);
+            }
+            if (Customer != null && Customer.CustomerId == i)
+            {
+                return Task.FromResult(Customer);
+            }
+           
+            return Task.FromResult(dummyCustomer);
         }
 
         private decimal GetRandomEuroAmount()
@@ -44,5 +55,18 @@ namespace ExchangeOrderSelecor.Services
             int btcRandom = random.Next(2, 12);
             return (long)btcRandom;
         }
+        Customer dummyCustomer = new Customer()
+        {
+            CustomerId = 0,
+            CustomerName = "Dummy Customer",
+            CustomerOrders = new(),
+            Wallet = new()
+            {
+                CustomerId = 0,
+                BTCAvailable = 0,
+                EuroAvailable = 0,
+            }
+        };
+
     }
 }
